@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Full Stack App</title>
+</head>
+<body>
+    <h1>Список елементів</h1>
+    <ul id="items-list">
+        <li>Завантаження...</li>
+    </ul>
+
+    <script>
+        fetch('/api/items')
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById('items-list');
+                list.innerHTML = ''; 
+                
+                if (data.error) {
+                    // Якщо backend повернув JSON з помилкою, показуємо її
+                    list.innerHTML = `<li>Помилка: ${data.error}</li>`;
+                    return;
+                }
+                
+                data.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `ID: ${item.id}, Назва: ${item.name}`;
+                    list.appendChild(li);
+                });
+            })
+            .catch(error => {
+                // Це помилка на рівні 'fetch' (наприклад, мережа недоступна)
+                console.error('Помилка fetch:', error);
+                const list = document.getElementById('items-list');
+                list.innerHTML = '<li>Не вдалося завантажити дані. Перевірте консоль.</li>';
+            });
+    </script>
+</body>
+</html>
