@@ -18,7 +18,6 @@
                 list.innerHTML = ''; 
                 
                 if (data.error) {
-                    // Якщо backend повернув JSON з помилкою, показуємо її
                     list.innerHTML = `<li>Помилка: ${data.error}</li>`;
                     return;
                 }
@@ -30,11 +29,11 @@
                 });
             })
             .catch(error => {
-                // Це помилка на рівні 'fetch' (наприклад, мережа недоступна)
                 console.error('Помилка fetch:', error);
                 const list = document.getElementById('items-list');
                 list.innerHTML = '<li>Не вдалося завантажити дані. Перевірте консоль.</li>';
             });
     </script>
 </body>
+
 </html>
