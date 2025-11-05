@@ -1,37 +1,20 @@
-
 services:
 
-
-  web:
-    build: ./web_app
+  gateway:
+    build: ./gateway
     ports:
-      - "5000:5000"
-    environment:
-      - POSTGRES_DB=usersdb
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-
-      - DB_HOST=db
+      - "80:80"
     networks:
-      - webnet
+      - microservice-net
     depends_on:
-      - db
+      - service-a
 
-  db:
-    image: postgres:latest
-    environment:
-      - POSTGRES_DB=usersdb
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-    volumes:
-      - postgres_data:/var/lib/postgresql
-      - ./db_init:/docker-entrypoint-initdb.d
+  # Flask
+  service-a:
+    build: ./service_a
     networks:
-      - webnet
+      - microservice-net
 
 networks:
-  webnet:
+  microservice-net:
     driver: bridge
-
-volumes:
-  postgres_data:
