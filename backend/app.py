@@ -50,8 +50,8 @@ def get_items():
         conn.close()
         return jsonify(items_list)
     except Exception as e:
-        # Повертаємо текст помилки у JSON
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
+
     app.run(host='0.0.0.0', port=5000)
