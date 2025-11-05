@@ -1,0 +1,50 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    networks:
+      - app-net
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    env_file: ./.env
+    networks:
+      - app-net
+    depends_on:
+      - database
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  database:
+    image: postgres:latest
+    env_file: ./.env
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./database:/docker-entrypoint-initdb.d
+    networks:
+      - app-net
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  app-net:
+    driver: bridge
